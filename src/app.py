@@ -1,6 +1,9 @@
 import os
 import config as config
 import controllers.usuarioController as usuarioController
+import controllers.vendedorController as vendedorController
+import controllers.produtoController as produtoController
+import controllers.compraController as compraController
 
 def clearConsole(): return os.system('cls'
                                      if os.name in ('nt', 'dos') else 'clear')
@@ -9,11 +12,11 @@ def clearConsole(): return os.system('cls'
 def createTables():
     session = config.connCassandra()
     session.execute("USE mercadolivre")
-    
+
     session.execute("CREATE TABLE IF NOT EXISTS usuario (cpf text PRIMARY KEY, nome text, email text, fav text)")
     print('Tabela de usuario criada!')
-
-    session.execute("CREATE TABLE IF NOT EXISTS vendedor (cnpj text PRIMARY KEY, nome text)")
+    
+    session.execute("CREATE TABLE IF NOT EXISTS vendedor (cnpj text PRIMARY KEY, nome text, email text)")
     print('Tabela de vendedor criada!')
 
     session.execute("CREATE TABLE IF NOT EXISTS produto (codigo text PRIMARY KEY, nome text, preco text, vendedor text)")
@@ -21,7 +24,7 @@ def createTables():
 
     session.execute("CREATE TABLE IF NOT EXISTS compra (id text PRIMARY KEY, usuario text, produto text)")
     print('Tabela de compra criada!')
-
+    
 
 def mainStart():
     clearConsole()
@@ -52,16 +55,6 @@ def mainStart():
             on = False
         else:
             print("Opção Não entendida")
-
-    session = config.connCassandra()
-
-    session.execute("USE mercadolivre")
-
-    row = session.execute("Select * from usuario").one()
-    if row:
-        print(row[0])
-    else:
-        print("An error occurred.")
 
 def usuarioStart():
     clearConsole()
@@ -115,6 +108,24 @@ def vendedorStart():
         print("==== X - FECHAR ====")
         print("===========================\n")
         select = input("Qual opção deseja?: ")
+        if select == "1":
+            vendedorController.listVendedores()
+        elif select == "2":
+            vendedorController.findVendedor()
+        elif select == "3":
+            vendedorController.insertVendedor()
+        elif select == "4":
+            vendedorController.updateVendedor()
+        elif select == "5":
+            vendedorController.deleteVendedor()
+        elif select == "CLS":
+            clearConsole()
+            return vendedorStart()
+        elif select == "X":
+            on = False
+            return mainStart()
+        else:
+            print("Opção Não entendida")
 
 def produtoStart():
     clearConsole()
@@ -131,6 +142,24 @@ def produtoStart():
         print("==== X - FECHAR ====")
         print("===========================\n")
         select = input("Qual opção deseja?: ")
+        if select == "1":
+            produtoController.listProdutos()
+        elif select == "2":
+            produtoController.findProduto()
+        elif select == "3":
+            produtoController.insertProduto()
+        elif select == "4":
+            produtoController.updateProduto()
+        elif select == "5":
+            produtoController.deleteProduto()
+        elif select == "CLS":
+            clearConsole()
+            return produtoStart()
+        elif select == "X":
+            on = False
+            return mainStart()
+        else:
+            print("Opção Não entendida")
 
 def compraStart():
     clearConsole()
@@ -141,11 +170,27 @@ def compraStart():
         print("==== 1 - LISTAR COMPRAS ====")
         print("==== 2 - BUSCAR COMPRA ====")
         print("==== 3 - NOVA COMPRA ====")
-        print("==== 5 - DELETAR COMPRA ====")
+        print("==== 4 - DELETAR COMPRA ====")
         print("==== CLS - CLEAR CONSOLE ====")
         print("==== X - FECHAR ====")
         print("===========================\n")
         select = input("Qual opção deseja?: ")
+        if select == "1":
+            compraController.listCompras()
+        elif select == "2":
+            compraController.findCompra()
+        elif select == "3":
+            compraController.insertCompra()
+        elif select == "4":
+            compraController.deleteCompra()
+        elif select == "CLS":
+            clearConsole()
+            return compraStart()
+        elif select == "X":
+            on = False
+            return mainStart()
+        else:
+            print("Opção Não entendida")
 
 # createTables()
 mainStart()
