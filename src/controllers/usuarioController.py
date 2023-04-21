@@ -124,4 +124,17 @@ def deleteUsuario():
         deleteUsuario()
 
 def insertFavorito():
-    print('por enquanto não inserimos favoritos XD')
+    print("\n===========================")
+    print("========= INSERIR PRODUTO AOS FAVORITOS =========")
+    print("===========================\n")
+
+    cpfUsuario = input("cpf do usuario: ")
+    codigoProduto = input("codigo do produto: ")
+    
+    usuarioObj = session.execute(f"SELECT * FROM usuario WHERE cpf = '{cpfUsuario}'").one()
+
+    produtoObj = session.execute(f"SELECT * FROM produto WHERE codigo = '{codigoProduto}'").one()
+    favorito = f"{usuarioObj.fav} - [Nome: {produtoObj.nome} Preço: R$ {produtoObj.preco} - Código: {produtoObj.codigo}]"
+
+    result_set = session.execute(f"UPDATE usuario SET fav = '{favorito}' WHERE CPF = '{cpfUsuario}'")
+    print('Produto inserido aos favoritos com sucesso!')
